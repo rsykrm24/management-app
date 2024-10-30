@@ -20,19 +20,20 @@ export default function Page() {
         route.push("/login")
       }
       setUser(res.user)
+      axios.post("/api/getdata",{
+        email:res.user.email
+      })
+      .then(res => setData(res.data.data))
     })
-    axios.get("/api/getdata")
-    .then(res => setData(res.data.data))
   },[])
-  setTimeout(() => console.log(data),3000)
   return(
-    <div>
+    <div className="h-screen">
       <Navbar user={user.name}/>
-      <div className="bg-white rounded-t-2xl p-3 text-black">
+      <div className="bg-white rounded-t-2xl p-3 text-black h-10/12">
         <SearchInput inputValue={input} inputChange={e => setInput(e.target.value)}/>
         <div className="mt-4 flex flex-col gap-3">
           {
-            (data.length == 0) ? <div></div> : data.map((data,i) => <List key={i}/>)
+            (data.length == 0) ? <div></div> : data.reverse().map((data,i) => <List key={i} title={data.title} text={data.list} tanggal={data?.created_at.split("T")[0]} link={`/list/${data.id}`} bg={(data.finish == "true") ? "bg-gray-400" : "bg-red-600"}/>)
           }
         </div>
       </div>
